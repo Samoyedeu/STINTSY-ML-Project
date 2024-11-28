@@ -1,4 +1,7 @@
 import numpy as np
+from sklearn.metrics import mean_squared_error
+from sklearn.metrics import mean_absolute_error
+from sklearn.metrics import r2_score
 
 def poly_feature_transform(X, poly_order=1):
     """Transforms the input data X to match the specified polynomial order.
@@ -34,3 +37,36 @@ def poly_feature_transform(X, poly_order=1):
                 f_transform = np.column_stack((f_transform, X[:, j] ** i))
 
     return f_transform
+
+def compute_RMSE(y_true, y_pred):
+    # TODO: Compute the Root Mean Squared Error
+    rmse = np.sqrt( np.square(np.subtract(y_true, y_pred)).mean() )
+
+    return rmse
+
+def compute_R2_Score(y_true, y_pred):
+    # Compute the mean of the true values
+    mean_true = sum(y_true) / len(y_true)
+
+    # Compute Total Sum of Squares
+    tss = sum((yi - mean_true) ** 2 for yi in y_true)
+
+    # Compute Residual Sum of Squares
+    rss = sum((yi - yhat) ** 2 for yi, yhat in zip(y_true, y_pred))
+
+    # Compute R-squared
+    r2_score = 1 - rss / tss
+
+    return r2_score
+
+def compute_metrics(y_true, y_pred, model_name):
+    mse = mean_squared_error(y_true, y_pred)
+    rmse = np.sqrt(mse)
+    mae = mean_absolute_error(y_true, y_pred)
+    r2 = r2_score(y_true, y_pred)
+    
+    print(f" Metrics for {model_name}:")
+    print(f" Mean Squared Error (MSE): {mse:.4f}")
+    print(f" Root Mean Squared Error (RMSE): {rmse:.4f}")
+    print(f" Mean Absolute Error (MAE): {mae:.4f}")
+    print(f" R-squared (R²): {r2:.4f}")
